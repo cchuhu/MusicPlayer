@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private boolean isPlaying = false;
     //标题实例
     private TextView tv_title;
+    //当前播放的序号
+    private int pos = 0;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -45,18 +48,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     sendBroadcast(i);
                     break;
                 case 1:
-                    sendBroadcast(buildIntent(Constants.ACTION_PLAY));
+                    sendBroadcast(buildIntent(Constants.ACTION_PLAY, ""));
                     isPlaying = true;
                     break;
                 case 2:
-                    sendBroadcast(buildIntent(Constants.ACTION_PREVIOUS));
+                    sendBroadcast(buildIntent(Constants.ACTION_PREVIOUS, musiclist.get(pos).getUrl()));
                     break;
                 case 3:
-                    sendBroadcast(buildIntent(Constants.ACTION_NEXT));
+                    sendBroadcast(buildIntent(Constants.ACTION_NEXT, musiclist.get(pos).getUrl()));
                     break;
                 case 4:
                     isPlaying = false;
-                    sendBroadcast(buildIntent(Constants.ACTION_PAUSE));
+                    sendBroadcast(buildIntent(Constants.ACTION_PAUSE, ""));
                     break;
             }
 
@@ -102,6 +105,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 message.what = 0;
                 message.arg1 = position;
                 mHandler.sendMessage(message);
+                isPlaying = true;
+                pos = position;
 
             }
         });
@@ -118,10 +123,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * @param action 要广播的action
      * @return intent
      */
-    private Intent buildIntent(String action) {
-
+    private Intent buildIntent(String action, String... kvs) {
         Intent i = new Intent();
         i.setAction(action);
+        i.putExtra("uri", kvs[0]);
         return i;
 
     }
@@ -131,14 +136,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.btn_left:
-                Message message1 = new Message();
-                message1.what = 2;
-                mHandler.sendMessage(message1);
+                if (pos > 0) {
+                    pos--;
+                    Message message1 = new Message();
+                    message1.what = 2;
+                    mHandler.sendMessage(message1);
+
+                } else {
+                    Toast.makeText(MainActivity.this, "已经是第一首了哦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btn_right:
-                Message message2 = new Message();
-                message2.what = 3;
-                mHandler.sendMessage(message2);
+                if (pos < musiclist.size() - 1) {
+                    pos++;
+                    Message message2 = new Message();
+                    message2.what = 3;
+                    mHandler.sendMessage(message2);
+
+                } else {
+                    Toast.makeText(MainActivity.this, "已经是最后一首了哦", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.btn_switch:
                 Message message3 = new Message();
