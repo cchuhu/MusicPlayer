@@ -53,9 +53,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     break;
                 case 2:
                     sendBroadcast(buildIntent(Constants.ACTION_PREVIOUS, musiclist.get(pos).getUrl()));
+                    tv_title.setText(musiclist.get(pos).getTitle());
                     break;
                 case 3:
                     sendBroadcast(buildIntent(Constants.ACTION_NEXT, musiclist.get(pos).getUrl()));
+                    tv_title.setText(musiclist.get(pos).getTitle());
                     break;
                 case 4:
                     isPlaying = false;
@@ -107,6 +109,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 mHandler.sendMessage(message);
                 isPlaying = true;
                 pos = position;
+                btn_switch.setBackgroundResource(R.mipmap.play);
 
             }
         });
@@ -141,6 +144,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Message message1 = new Message();
                     message1.what = 2;
                     mHandler.sendMessage(message1);
+                    btn_switch.setBackgroundResource(R.mipmap.play);
 
                 } else {
                     Toast.makeText(MainActivity.this, "已经是第一首了哦", Toast.LENGTH_SHORT).show();
@@ -152,6 +156,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Message message2 = new Message();
                     message2.what = 3;
                     mHandler.sendMessage(message2);
+                    btn_switch.setBackgroundResource(R.mipmap.play);
 
                 } else {
                     Toast.makeText(MainActivity.this, "已经是最后一首了哦", Toast.LENGTH_SHORT).show();
@@ -162,9 +167,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Message message3 = new Message();
                 //如果正在播放，则切换到pause状态
                 if (isPlaying) {
+                    btn_switch.setBackgroundResource(R.mipmap.pause);
                     message3.what = 4;
+
                 } else {
+                    btn_switch.setBackgroundResource(R.mipmap.play);
                     message3.what = 1;
+
                 }
                 mHandler.sendMessage(message3);
                 break;
