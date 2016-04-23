@@ -13,7 +13,16 @@ public class MusicInfo implements Serializable {
     private String title;
     //歌曲时长
     private int duration;
+    //歌曲所在URL
+    private String url;
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getAuthor() {
         return author;
